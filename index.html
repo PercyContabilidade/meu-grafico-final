@@ -6,172 +6,72 @@
     <title>Método PercyJ14 - Gráfico de Dispersão</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #374151;
+            background-color: #f1f5f9; /* Slate 100 - Um cinza levemente azulado */
+            color: #334155; /* Slate 700 */
+        }
+        /* Efeito suave nos inputs */
+        textarea:focus, input:focus {
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -1px rgba(59, 130, 246, 0.06);
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <header class="w-full bg-[#0f172a] text-white shadow-md">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden border-2 border-white bg-gray-600">
-                    <img src="https://via.placeholder.com/150" alt="Foto Percy" class="w-full h-full object-cover">
+    <header class="w-full bg-gradient-to-r from-[#0f172a] to-[#1e293b] text-white shadow-xl relative z-10">
+        <div class="max-w-5xl mx-auto px-6 py-6 flex justify-between items-center">
+            
+            <div class="flex items-center gap-5">
+                <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-white/90 bg-gray-700 shadow-lg ring-2 ring-white/20">
+                    <img src="logojefter.jpeg" alt="Logo Método PercyJ14" class="w-full h-full object-cover">
                 </div>
                 
-                <div class="flex flex-col">
-                    <h1 class="text-lg md:text-xl font-bold leading-tight">Método PercyJ14</h1>
-                    <span class="text-[10px] md:text-xs text-gray-400 uppercase tracking-wider">Guia Técnico-Tático</span>
+                <div class="flex flex-col justify-center">
+                    <h1 class="text-2xl md:text-3xl font-bold leading-tight tracking-tight text-white">Método PercyJ14</h1>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="h-px w-8 bg-blue-400"></span>
+                        <span class="text-xs md:text-sm text-blue-200 uppercase tracking-wider font-semibold">Guia Técnico-Tático</span>
+                    </div>
                 </div>
             </div>
 
             <div class="text-right">
-                <h2 class="text-sm md:text-base font-bold text-white">Jefter Percy</h2>
-                <p class="text-[10px] md:text-xs text-gray-400">Organizador e Idealizador</p>
+                <h2 class="text-lg md:text-xl font-bold text-white">Jefter Percy</h2>
+                <p class="text-xs md:text-sm text-blue-200 font-medium">Organizador e Idealizador</p>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow flex items-center justify-center p-4 sm:p-8">
-        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-4xl border border-gray-200">
-            <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Gráfico de Dispersão Interativo</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="flex flex-col">
-                    <label for="xData" class="text-sm font-medium text-gray-700 mb-1">Valores X (separados por vírgula):</label>
-                    <textarea id="xData" rows="4" class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" placeholder="Ex: 10, 15, 20, 25"></textarea>
-                </div>
-                <div class="flex flex-col">
-                    <label for="yData" class="text-sm font-medium text-gray-700 mb-1">Valores Y (separados por vírgula):</label>
-                    <textarea id="yData" rows="4" class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" placeholder="Ex: 5, 8, 12, 18"></textarea>
-                </div>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                <div class="flex-1">
-                    <label for="xLabel" class="text-sm font-medium text-gray-700 mb-1">Rótulo do Eixo X:</label>
-                    <input type="text" id="xLabel" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" placeholder="Ex: Idade">
-                </div>
-                <div class="flex-1">
-                    <label for="yLabel" class="text-sm font-medium text-gray-700 mb-1">Rótulo do Eixo Y:</label>
-                    <input type="text" id="yLabel" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" placeholder="Ex: Renda Mensal">
-                </div>
-                <div class="flex-1">
-                    <label for="chartTitle" class="text-sm font-medium text-gray-700 mb-1">Título do Gráfico:</label>
-                    <input type="text" id="chartTitle" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" placeholder="Ex: Relação entre Idade e Renda">
-                </div>
-            </div>
-
-            <div class="flex justify-center mb-6">
-                <button onclick="updateChart()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-transform duration-200 active:scale-95">Gerar Gráfico</button>
-            </div>
-
-            <div id="scatterPlot" class="w-full h-96 border border-gray-300 rounded-lg shadow-inner"></div>
-
-            <div id="error-message" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg hidden"></div>
-        </div>
-    </main>
-
-    <script>
-        // Função para exibir mensagens de erro personalizadas
-        function showMessage(message, isError = true) {
-            const messageBox = document.getElementById('error-message');
-            messageBox.textContent = message;
-            if (isError) {
-                messageBox.classList.remove('hidden');
-                messageBox.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
-            } else {
-                messageBox.classList.remove('hidden');
-                messageBox.classList.remove('bg-red-100', 'border-red-400', 'text-red-700');
-                messageBox.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
-            }
-        }
-
-        // Função para ocultar a mensagem
-        function hideMessage() {
-            document.getElementById('error-message').classList.add('hidden');
-        }
-
-        // Função principal para atualizar o gráfico
-        function updateChart() {
-            hideMessage(); // Oculta a mensagem anterior
-
-            const xDataInput = document.getElementById('xData').value;
-            const yDataInput = document.getElementById('yData').value;
-            const xLabel = document.getElementById('xLabel').value || "Eixo X";
-            const yLabel = document.getElementById('yLabel').value || "Eixo Y";
-            const chartTitle = document.getElementById('chartTitle').value || "Gráfico de Dispersão";
-
-            // Converte os dados de entrada de string para arrays de números
-            const xData = xDataInput.split(',').map(item => Number(item.trim())).filter(item => !isNaN(item));
-            const yData = yDataInput.split(',').map(item => Number(item.trim())).filter(item => !isNaN(item));
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-8 -mt-6">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-5xl border border-gray-100 z-0 relative">
             
-            // Verifica se os arrays de dados têm o mesmo tamanho
-            if (xData.length === 0 || yData.length === 0 || xData.length !== yData.length) {
-                showMessage('Por favor, insira valores válidos e garanta que os arrays de dados X e Y tenham o mesmo tamanho.');
-                return;
-            }
+            <div class="flex items-center justify-center mb-8">
+                <div class="bg-blue-50 text-blue-800 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide mb-2 absolute top-8">
+                    Análise de Dados
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mt-6">Gráfico de Dispersão Interativo</h2>
+            </div>
 
-            // Cria o objeto de rastreamento de dados para o Plotly
-            const trace = {
-                x: xData,
-                y: yData,
-                mode: 'markers',
-                type: 'scatter',
-                marker: {
-                    size: 10,
-                    color: 'rgba(54, 162, 235, 0.8)',
-                    line: {
-                        color: 'rgba(54, 162, 235, 1)',
-                        width: 1
-                    }
-                }
-            };
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="flex flex-col group">
+                    <label for="xData" class="text-sm font-semibold text-gray-600 mb-2 group-focus-within:text-blue-600 transition-colors">Valores X (separados por vírgula)</label>
+                    <textarea id="xData" rows="4" class="p-4 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300 resize-none font-mono text-sm" placeholder="Ex: 10, 15, 20, 25"></textarea>
+                </div>
+                <div class="flex flex-col group">
+                    <label for="yData" class="text-sm font-semibold text-gray-600 mb-2 group-focus-within:text-blue-600 transition-colors">Valores Y (separados por vírgula)</label>
+                    <textarea id="yData" rows="4" class="p-4 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300 resize-none font-mono text-sm" placeholder="Ex: 5, 8, 12, 18"></textarea>
+                </div>
+            </div>
 
-            // Define o layout do gráfico
-            const layout = {
-                title: {
-                    text: chartTitle,
-                    font: {
-                        size: 20,
-                        color: '#1f2937'
-                    }
-                },
-                xaxis: {
-                    title: xLabel
-                },
-                yaxis: {
-                    title: yLabel
-                },
-                margin: {
-                    l: 50,
-                    r: 50,
-                    b: 50,
-                    t: 50
-                },
-                plot_bgcolor: "#f9fafb",
-                paper_bgcolor: "#ffffff"
-            };
-
-            // Plota o gráfico no div com id 'scatterPlot'
-            Plotly.newPlot('scatterPlot', [trace], layout);
-        }
-
-        // Plota um gráfico inicial de exemplo ao carregar a página
-        window.onload = function() {
-            document.getElementById('xData').value = '10, 15, 20, 25, 30, 35';
-            document.getElementById('yData').value = '5, 8, 12, 18, 25, 30';
-            document.getElementById('xLabel').value = 'Exemplo de Dados X';
-            document.getElementById('yLabel').value = 'Exemplo de Dados Y';
-            document.getElementById('chartTitle').value = 'Gráfico de Dispersão de Exemplo';
-            updateChart();
-        };
-
-    </script>
-</body>
-</html>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="group">
+                    <label for="xLabel" class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 block group-focus-within:text-blue-600">Eixo X</label>
+                    <input type="text" id="xLabel" class="w-full p-3 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-200" placeholder="Rótulo...">
+                </div>
+                <div class="group">
+                    <label for="yLabel" class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 block group-focus-within:text-blue-600">Eixo Y</label>
+                    <input type="text" id="yLabel" class="w-full p-3 border
