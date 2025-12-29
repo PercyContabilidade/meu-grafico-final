@@ -147,17 +147,11 @@
         // Função para limpar e converter texto em números
         function parseDataInput(inputText) {
             if (!inputText) return [];
-            // Remove espaços extras e quebra por vírgula, ponto e vírgula ou nova linha
-            return inputText.replace(/,/g, ',') // Garante que virgulas sejam tratadas como separadores, não decimais (JS usa ponto para decimal)
+            return inputText.replace(/,/g, ',') 
                            .split(/[\n,;]+/) 
                            .map(item => item.trim())
                            .filter(item => item !== '')
-                           .map(item => {
-                               // Tenta converter para float
-                               // Se o usuário usou vírgula como decimal (ex: 2,5), isso vai quebrar em dois números (2 e 5) no split acima se não cuidarmos.
-                               // Melhor prática para inputs manuais simples: assumir PONTO como decimal e VIRGULA como separador.
-                               return parseFloat(item);
-                           })
+                           .map(item => parseFloat(item))
                            .filter(item => !isNaN(item));
         }
 
@@ -183,7 +177,6 @@
         }
 
         function updateChart() {
-            // 1. Feedback Visual no Botão
             const btn = document.getElementById('btnGenerate');
             const btnText = document.getElementById('btnText');
             const originalText = btnText.innerText;
@@ -191,7 +184,6 @@
             btnText.innerText = "PROCESSANDO...";
             btn.classList.add('opacity-75', 'cursor-wait');
 
-            // Pequeno timeout para garantir que a UI atualize antes do processamento pesado
             setTimeout(() => {
                 try {
                     const xInput = document.getElementById('xData').value;
@@ -200,7 +192,6 @@
                     const xData = parseDataInput(xInput);
                     const yData = parseDataInput(yInput);
 
-                    // 2. Validação com ALERTA (Impossível de ignorar)
                     if (xData.length === 0 && yData.length === 0) {
                         alert("⚠️ Ops! Os campos estão vazios ou inválidos.\n\nPor favor, digite números separados por vírgula.\nExemplo: 10, 20, 30");
                         resetButton();
@@ -225,7 +216,6 @@
                         return;
                     }
 
-                    // 3. Gerar Gráfico
                     const trace = {
                         x: xData,
                         y: yData,
@@ -261,10 +251,10 @@
                         hovermode: 'closest'
                     };
 
-                    const config = { responsive: true, displayModeBar: true, displaylogo: false };
+                    // AQUI ESTÁ A MÁGICA: displayModeBar: false
+                    const config = { responsive: true, displayModeBar: false };
 
                     Plotly.newPlot('scatterPlot', [trace], layout, config).then(() => {
-                        // Rola a tela até o gráfico
                         document.getElementById('scatterPlot').scrollIntoView({ behavior: 'smooth', block: 'center' });
                     });
 
