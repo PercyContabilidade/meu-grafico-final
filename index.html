@@ -21,6 +21,10 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
         }
+        /* Animação suave para o gráfico */
+        #scatterPlot {
+            transition: opacity 0.5s ease-in;
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -56,14 +60,15 @@
             <div class="bg-gray-50 px-8 py-6 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800">Gráfico de Dispersão</h2>
-                    <p class="text-sm text-gray-500 mt-1">Visualize correlações entre variáveis do seu negócio.</p>
+                    <p class="text-sm text-gray-500 mt-1">Insira seus dados abaixo e clique em gerar.</p>
                 </div>
                 
                 <button onclick="generateRandomScenario()" class="group flex items-center gap-2 bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-lg hover:border-blue-400 hover:text-blue-600 transition-all shadow-sm text-sm font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Simular Cenário (Demo)
+                    Carregar Exemplo (Teste)
                 </button>
             </div>
 
@@ -74,8 +79,7 @@
                             <span class="w-2 h-6 bg-blue-500 rounded-sm"></span>
                             Eixo X (Dados Independentes)
                         </label>
-                        <textarea id="xData" rows="5" class="w-full p-4 border border-gray-200 rounded-xl bg-slate-50 text-slate-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white resize-none" placeholder="Exemplo:&#10;10&#10;20&#10;30&#10;(Aceita vírgula ou enter)"></textarea>
-                        <p class="text-[10px] text-gray-400 mt-1 text-right">Use ponto (.) para decimais</p>
+                        <textarea id="xData" rows="5" class="w-full p-4 border border-gray-200 rounded-xl bg-slate-50 text-slate-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white resize-none" placeholder="Digite os números aqui...&#10;Ex: 10, 20, 30"></textarea>
                     </div>
                     
                     <div class="relative">
@@ -83,7 +87,7 @@
                             <span class="w-2 h-6 bg-indigo-500 rounded-sm"></span>
                             Eixo Y (Dados Dependentes)
                         </label>
-                        <textarea id="yData" rows="5" class="w-full p-4 border border-gray-200 rounded-xl bg-slate-50 text-slate-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white resize-none" placeholder="Exemplo:&#10;5&#10;15&#10;25&#10;(Aceita vírgula ou enter)"></textarea>
+                        <textarea id="yData" rows="5" class="w-full p-4 border border-gray-200 rounded-xl bg-slate-50 text-slate-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white resize-none" placeholder="Digite os números aqui...&#10;Ex: 5, 15, 25"></textarea>
                     </div>
                 </div>
 
@@ -102,18 +106,17 @@
                     </div>
                 </div>
 
-                <div class="flex justify-center mb-8">
-                    <button id="btnGenerate" onclick="updateChart()" class="bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold py-3 px-12 rounded-lg shadow-lg shadow-gray-400/30 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-200 flex items-center gap-2 cursor-pointer z-10">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                <div class="flex flex-col items-center justify-center mb-8 gap-2">
+                    <button id="btnGenerate" onclick="updateChart()" class="bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold py-4 px-16 rounded-full shadow-lg shadow-gray-400/30 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-200 flex items-center gap-3 cursor-pointer z-10 text-lg">
+                        <span id="btnText">GERAR VISUALIZAÇÃO</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
-                        GERAR VISUALIZAÇÃO
                     </button>
+                    <p class="text-xs text-gray-400">Clique para atualizar os dados no gráfico abaixo</p>
                 </div>
 
-                <div id="error-message" class="hidden mt-4 p-4 rounded-lg text-sm font-medium text-center border"></div>
-
-                <div class="relative w-full rounded-xl overflow-hidden border border-gray-200 shadow-inner bg-white mt-4">
+                <div class="relative w-full rounded-xl overflow-hidden border border-gray-200 shadow-inner bg-white mt-4 min-h-[500px]">
                     <div id="scatterPlot" class="w-full h-[500px]"></div>
                 </div>
             </div>
@@ -141,38 +144,143 @@
     </footer>
 
     <script>
-        function showMessage(message, type = 'error') {
-            const el = document.getElementById('error-message');
-            el.innerHTML = message;
-            el.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200', 'bg-blue-50', 'text-blue-700', 'border-blue-200');
-            
-            if (type === 'error') {
-                el.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
-            } else {
-                el.classList.add('bg-blue-50', 'text-blue-700', 'border-blue-200');
-            }
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        function hideMessage() {
-            document.getElementById('error-message').classList.add('hidden');
-        }
-
-        // Função robusta para limpar e converter texto em números
+        // Função para limpar e converter texto em números
         function parseDataInput(inputText) {
             if (!inputText) return [];
-            // Substitui vírgulas decimais (erradas) por pontos, se houver confusão, mas aqui assumimos separação
-            // Estratégia: Divide por quebra de linha, vírgula ou ponto e vírgula
-            return inputText.split(/[\n,;]+/) 
+            // Remove espaços extras e quebra por vírgula, ponto e vírgula ou nova linha
+            return inputText.replace(/,/g, ',') // Garante que virgulas sejam tratadas como separadores, não decimais (JS usa ponto para decimal)
+                           .split(/[\n,;]+/) 
                            .map(item => item.trim())
                            .filter(item => item !== '')
-                           .map(item => parseFloat(item))
+                           .map(item => {
+                               // Tenta converter para float
+                               // Se o usuário usou vírgula como decimal (ex: 2,5), isso vai quebrar em dois números (2 e 5) no split acima se não cuidarmos.
+                               // Melhor prática para inputs manuais simples: assumir PONTO como decimal e VIRGULA como separador.
+                               return parseFloat(item);
+                           })
                            .filter(item => !isNaN(item));
         }
 
         function generateRandomScenario() {
             let xArr = [];
             let yArr = [];
-            let baseVal = 1000;
             
-            for (let i = 0; i
+            for (let i = 0; i < 15; i++) {
+                let xVal = 1000 + (i * 500);
+                let yVal = Math.floor((xVal * 0.25) * ((Math.random() * 0.4) + 0.8)); 
+                xArr.push(xVal);
+                yArr.push(yVal);
+            }
+
+            document.getElementById('xData').value = xArr.join(', ');
+            document.getElementById('yData').value = yArr.join(', ');
+            
+            document.getElementById('xLabel').value = "Investimento (R$)";
+            document.getElementById('yLabel').value = "Retorno (R$)";
+            document.getElementById('chartTitle').value = "Simulação: Exemplo Automático";
+
+            updateChart();
+        }
+
+        function updateChart() {
+            // 1. Feedback Visual no Botão
+            const btn = document.getElementById('btnGenerate');
+            const btnText = document.getElementById('btnText');
+            const originalText = btnText.innerText;
+            
+            btnText.innerText = "PROCESSANDO...";
+            btn.classList.add('opacity-75', 'cursor-wait');
+
+            // Pequeno timeout para garantir que a UI atualize antes do processamento pesado
+            setTimeout(() => {
+                try {
+                    const xInput = document.getElementById('xData').value;
+                    const yInput = document.getElementById('yData').value;
+                    
+                    const xData = parseDataInput(xInput);
+                    const yData = parseDataInput(yInput);
+
+                    // 2. Validação com ALERTA (Impossível de ignorar)
+                    if (xData.length === 0 && yData.length === 0) {
+                        alert("⚠️ Ops! Os campos estão vazios ou inválidos.\n\nPor favor, digite números separados por vírgula.\nExemplo: 10, 20, 30");
+                        resetButton();
+                        return;
+                    }
+
+                    if (xData.length === 0) {
+                        alert("⚠️ O campo 'Eixo X' está vazio ou inválido.");
+                        resetButton();
+                        return;
+                    }
+                    
+                    if (yData.length === 0) {
+                        alert("⚠️ O campo 'Eixo Y' está vazio.\nPara gerar o gráfico, você precisa de dois conjuntos de dados.");
+                        resetButton();
+                        return;
+                    }
+
+                    if (xData.length !== yData.length) {
+                        alert(`⚠️ Disparidade de Dados!\n\nVocê digitou ${xData.length} números no Eixo X.\nMas digitou ${yData.length} números no Eixo Y.\n\nA quantidade precisa ser igual para formar o par (X,Y).`);
+                        resetButton();
+                        return;
+                    }
+
+                    // 3. Gerar Gráfico
+                    const trace = {
+                        x: xData,
+                        y: yData,
+                        mode: 'markers',
+                        type: 'scatter',
+                        marker: {
+                            size: 16,
+                            color: yData, 
+                            colorscale: 'Blues',
+                            showscale: false,
+                            line: { color: 'white', width: 2 },
+                            opacity: 0.9
+                        },
+                        hovertemplate: '<b>X</b>: %{x}<br><b>Y</b>: %{y}<extra></extra>'
+                    };
+
+                    const layout = {
+                        title: {
+                            text: document.getElementById('chartTitle').value || 'Gráfico Gerado',
+                            font: { family: 'Inter, sans-serif', size: 24, color: '#1e293b', weight: 700 }
+                        },
+                        xaxis: {
+                            title: { text: document.getElementById('xLabel').value || 'Eixo X' },
+                            gridcolor: '#f1f5f9',
+                        },
+                        yaxis: {
+                            title: { text: document.getElementById('yLabel').value || 'Eixo Y' },
+                            gridcolor: '#f1f5f9',
+                        },
+                        paper_bgcolor: '#ffffff',
+                        plot_bgcolor: '#ffffff',
+                        margin: { t: 60, b: 60, l: 60, r: 40 },
+                        hovermode: 'closest'
+                    };
+
+                    const config = { responsive: true, displayModeBar: true, displaylogo: false };
+
+                    Plotly.newPlot('scatterPlot', [trace], layout, config).then(() => {
+                        // Rola a tela até o gráfico
+                        document.getElementById('scatterPlot').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+
+                } catch (error) {
+                    console.error(error);
+                    alert("Erro técnico inesperado. Verifique o console.");
+                } finally {
+                    resetButton();
+                }
+            }, 100);
+
+            function resetButton() {
+                btnText.innerText = originalText;
+                btn.classList.remove('opacity-75', 'cursor-wait');
+            }
+        }
+    </script>
+</body>
+</html>
