@@ -3,175 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Método PercyJ14 - Gráfico de Dispersão</title>
+    <title>Método PercyJ14 - Painel de Inteligência</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #374151;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #334155; /* Slate 700 */
+        }
+        /* Suavização de inputs */
+        textarea, input {
+            transition: all 0.3s ease;
+        }
+        textarea:focus, input:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <header class="w-full bg-[#0f172a] text-white shadow-md">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden border-2 border-white bg-gray-600">
-                    <img src="https://via.placeholder.com/150" alt="Foto Percy" class="w-full h-full object-cover">
+    <header class="w-full bg-[#0f172a] text-white shadow-lg border-b-4 border-blue-600 relative z-20">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-4">
+            
+            <div class="flex items-center gap-5">
+                <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-white/20 bg-gray-800 shadow-xl flex-shrink-0">
+                    <img src="logojefter.jpeg" alt="Logo Método PercyJ14" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150?text=Logo+Aqui'">
                 </div>
                 
                 <div class="flex flex-col">
-                    <h1 class="text-lg md:text-xl font-bold leading-tight">Método PercyJ14</h1>
-                    <span class="text-[10px] md:text-xs text-gray-400 uppercase tracking-wider">Guia Técnico-Tático</span>
+                    <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Método PercyJ14</h1>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="px-2 py-0.5 rounded text-[10px] md:text-xs font-bold bg-blue-600 text-white uppercase tracking-wider">Analytics</span>
+                        <span class="text-xs md:text-sm text-gray-400 font-medium">Gestão Estratégica de Dados</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="text-right">
-                <h2 class="text-sm md:text-base font-bold text-white">Jefter Percy</h2>
-                <p class="text-[10px] md:text-xs text-gray-400">Organizador e Idealizador</p>
+            <div class="text-center md:text-right">
+                <h2 class="text-base md:text-lg font-semibold text-white">Jefter Percy</h2>
+                <p class="text-xs text-blue-200/80 uppercase tracking-widest">Organizador e Idealizador</p>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow flex items-center justify-center p-4 sm:p-8">
-        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-4xl border border-gray-200">
-            <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Gráfico de Dispersão Interativo</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="flex flex-col">
-                    <label for="xData" class="text-sm font-medium text-gray-700 mb-1">Valores X (separados por vírgula):</label>
-                    <textarea id="xData" rows="4" class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" placeholder="Ex: 10, 15, 20, 25"></textarea>
+    <main class="flex-grow w-full max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            
+            <div class="bg-gray-50 px-8 py-6 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Gráfico de Dispersão</h2>
+                    <p class="text-sm text-gray-500 mt-1">Visualize correlações entre variáveis do seu negócio.</p>
                 </div>
-                <div class="flex flex-col">
-                    <label for="yData" class="text-sm font-medium text-gray-700 mb-1">Valores Y (separados por vírgula):</label>
-                    <textarea id="yData" rows="4" class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" placeholder="Ex: 5, 8, 12, 18"></textarea>
-                </div>
+                
+                <button onclick="generateRandomScenario()" class="group flex items-center gap-2 bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-lg hover:border-blue-400 hover:text-blue-600 transition-all shadow-sm text-sm font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Simular Cenário (Demo)
+                </button>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                <div class="flex-1">
-                    <label for="xLabel" class="text-sm font-medium text-gray-700 mb-1">Rótulo do Eixo X:</label>
-                    <input type="text" id="xLabel" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" placeholder="Ex: Idade">
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div class="relative">
+                        <label for="xData" class="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                            <span class="w-2 h-6 bg-blue-500 rounded-sm"></span>
+                            Eixo X (Dados Independentes)
+                        </label>
+                        <textarea id="xData" rows="3" class="w-full p-4 border border-gray-200 rounded-xl bg-slate-50 text-slate-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white resize-none" placeholder="Insira números separados por vírgula..."></textarea>
+                    </div>
+                    
+                    <div class="relative">
+                        <label for="yData" class="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                            <span class="w-2 h-6 bg-indigo-500 rounded-sm"></span>
+                            Eixo Y (Dados Dependentes)
+                        </label>
+                        <textarea id="yData" rows="3" class="w-full p-4 border border-gray-200 rounded-xl bg-slate-50 text-slate-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white resize-none" placeholder="Insira números separados por vírgula..."></textarea>
+                    </div>
                 </div>
-                <div class="flex-1">
-                    <label for="yLabel" class="text-sm font-medium text-gray-700 mb-1">Rótulo do Eixo Y:</label>
-                    <input type="text" id="yLabel" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" placeholder="Ex: Renda Mensal">
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 p-6 bg-gray-50 rounded-xl border border-gray-100">
+                    <div>
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1 block">Rótulo Eixo X</label>
+                        <input type="text" id="xLabel" class="w-full p-2 bg-white border border-gray-200 rounded text-sm font-medium text-gray-700 focus:outline-none focus:border-blue-400" placeholder="Ex: Investimento">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1 block">Rótulo Eixo Y</label>
+                        <input type="text" id="yLabel" class="w-full p-2 bg-white border border-gray-200 rounded text-sm font-medium text-gray-700 focus:outline-none focus:border-blue-400" placeholder="Ex: Retorno">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1 block">Título do Gráfico</label>
+                        <input type="text" id="chartTitle" class="w-full p-2 bg-white border border-gray-200 rounded text-sm font-medium text-gray-700 focus:outline-none focus:border-blue-400" placeholder="Ex: Análise ROI">
+                    </div>
                 </div>
-                <div class="flex-1">
-                    <label for="chartTitle" class="text-sm font-medium text-gray-700 mb-1">Título do Gráfico:</label>
-                    <input type="text" id="chartTitle" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" placeholder="Ex: Relação entre Idade e Renda">
+
+                <div class="flex justify-center mb-8">
+                    <button onclick="updateChart()" class="bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold py-3 px-10 rounded-lg shadow-lg shadow-gray-400/30 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Gerar Visualização
+                    </button>
                 </div>
+
+                <div class="relative w-full rounded-xl overflow-hidden border border-gray-200 shadow-inner bg-white">
+                    <div id="scatterPlot" class="w-full h-[500px]"></div>
+                </div>
+
+                <div id="error-message" class="hidden mt-4 p-4 rounded-lg text-sm font-medium text-center animate-pulse"></div>
             </div>
-
-            <div class="flex justify-center mb-6">
-                <button onclick="updateChart()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-transform duration-200 active:scale-95">Gerar Gráfico</button>
-            </div>
-
-            <div id="scatterPlot" class="w-full h-96 border border-gray-300 rounded-lg shadow-inner"></div>
-
-            <div id="error-message" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg hidden"></div>
         </div>
     </main>
 
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-5xl mx-auto px-6 py-8">
+            <div class="flex flex-col items-center justify-center space-y-2">
+                <p class="text-sm font-bold text-gray-800">
+                    &copy; 2025 Percy Contabilidade - Negócios Inteligentes
+                </p>
+                <div class="flex items-center gap-2 text-xs text-gray-500">
+                    <span>Todos os direitos reservados</span>
+                    <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                    <span>CNPJ verificado</span>
+                    <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                    <span>Nova Iguaçu - RJ</span>
+                </div>
+                <p class="text-[10px] text-gray-400 mt-2 font-mono">
+                    Desenvolvido para uso exclusivo no Método PercyJ14
+                </p>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // Função para exibir mensagens de erro personalizadas
-        function showMessage(message, isError = true) {
-            const messageBox = document.getElementById('error-message');
-            messageBox.textContent = message;
-            if (isError) {
-                messageBox.classList.remove('hidden');
-                messageBox.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+        // Lógica de Mensagens
+        function showMessage(message, type = 'error') {
+            const el = document.getElementById('error-message');
+            el.textContent = message;
+            el.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-blue-50', 'text-blue-700');
+            
+            if (type === 'error') {
+                el.classList.add('bg-red-50', 'text-red-700');
             } else {
-                messageBox.classList.remove('hidden');
-                messageBox.classList.remove('bg-red-100', 'border-red-400', 'text-red-700');
-                messageBox.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
+                el.classList.add('bg-blue-50', 'text-blue-700');
             }
         }
 
-        // Função para ocultar a mensagem
         function hideMessage() {
             document.getElementById('error-message').classList.add('hidden');
         }
 
-        // Função principal para atualizar o gráfico
-        function updateChart() {
-            hideMessage(); // Oculta a mensagem anterior
-
-            const xDataInput = document.getElementById('xData').value;
-            const yDataInput = document.getElementById('yData').value;
-            const xLabel = document.getElementById('xLabel').value || "Eixo X";
-            const yLabel = document.getElementById('yLabel').value || "Eixo Y";
-            const chartTitle = document.getElementById('chartTitle').value || "Gráfico de Dispersão";
-
-            // Converte os dados de entrada de string para arrays de números
-            const xData = xDataInput.split(',').map(item => Number(item.trim())).filter(item => !isNaN(item));
-            const yData = yDataInput.split(',').map(item => Number(item.trim())).filter(item => !isNaN(item));
+        // Função Geradora de Dados Aleatórios (Lógica de Negócios)
+        function generateRandomScenario() {
+            let xArr = [];
+            let yArr = [];
+            let baseVal = 1000;
             
-            // Verifica se os arrays de dados têm o mesmo tamanho
-            if (xData.length === 0 || yData.length === 0 || xData.length !== yData.length) {
-                showMessage('Por favor, insira valores válidos e garanta que os arrays de dados X e Y tenham o mesmo tamanho.');
+            // Cria 15 pontos de dados simulando Investimento vs Retorno
+            for (let i = 0; i < 15; i++) {
+                let xVal = baseVal + (i * 500) + Math.floor(Math.random() * 300);
+                // Correlação positiva com variação
+                let yVal = Math.floor((xVal * 0.25) * ((Math.random() * 0.4) + 0.8)); 
+
+                xArr.push(xVal);
+                yArr.push(yVal);
+            }
+
+            // Preenche os campos
+            document.getElementById('xData').value = xArr.join(', ');
+            document.getElementById('yData').value = yArr.join(', ');
+            
+            // Preenche os rótulos sugeridos
+            document.getElementById('xLabel').value = "Investimento (R$)";
+            document.getElementById('yLabel').value = "Retorno Estimado (R$)";
+            document.getElementById('chartTitle').value = "Simulação: Cheguei Sou MEI";
+
+            // Atualiza o gráfico automaticamente
+            updateChart();
+            showMessage('Cenário de simulação gerado com sucesso!', 'info');
+        }
+
+        function updateChart() {
+            hideMessage();
+
+            const xInput = document.getElementById('xData').value;
+            const yInput = document.getElementById('yData').value;
+            
+            // Processamento dos dados
+            const xData = xInput.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+            const yData = yInput.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+
+            // Validação
+            if (xData.length === 0 || yData.length === 0) {
+                showMessage('Por favor, insira dados numéricos válidos nos campos acima.');
+                return;
+            }
+            if (xData.length !== yData.length) {
+                showMessage(`Erro: O Eixo X tem ${xData.length} itens e o Eixo Y tem ${yData.length}. Eles precisam ser iguais.`);
                 return;
             }
 
-            // Cria o objeto de rastreamento de dados para o Plotly
+            // Configuração Visual Profissional
             const trace = {
                 x: xData,
                 y: yData,
                 mode: 'markers',
                 type: 'scatter',
                 marker: {
-                    size: 10,
-                    color: 'rgba(54, 162, 235, 0.8)',
+                    size: 14,
+                    color: yData, // Gradiente baseado no valor Y
+                    colorscale: 'Blues',
+                    showscale: false,
                     line: {
-                        color: 'rgba(54, 162, 235, 1)',
+                        color: 'white',
                         width: 1
-                    }
-                }
-            };
-
-            // Define o layout do gráfico
-            const layout = {
-                title: {
-                    text: chartTitle,
-                    font: {
-                        size: 20,
-                        color: '#1f2937'
-                    }
+                    },
+                    opacity: 0.9
                 },
-                xaxis: {
-                    title: xLabel
-                },
-                yaxis: {
-                    title: yLabel
-                },
-                margin: {
-                    l: 50,
-                    r: 50,
-                    b: 50,
-                    t: 50
-                },
-                plot_bgcolor: "#f9fafb",
-                paper_bgcolor: "#ffffff"
-            };
-
-            // Plota o gráfico no div com id 'scatterPlot'
-            Plotly.newPlot('scatterPlot', [trace], layout);
-        }
-
-        // Plota um gráfico inicial de exemplo ao carregar a página
-        window.onload = function() {
-            document.getElementById('xData').value = '10, 15, 20, 25, 30, 35';
-            document.getElementById('yData').value = '5, 8, 12, 18, 25, 30';
-            document.getElementById('xLabel').value = 'Exemplo de Dados X';
-            document.getElementById('yLabel').value = 'Exemplo de Dados Y';
-            document.getElementById('chartTitle').value = 'Gráfico de Dispersão de Exemplo';
-            updateChart();
-        };
-
-    </script>
-</body>
-</html>
+                hovertemplate: 
+                    '
