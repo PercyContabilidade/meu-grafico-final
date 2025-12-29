@@ -11,10 +11,9 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Slate 50 */
-            color: #334155; /* Slate 700 */
+            background-color: #f8fafc;
+            color: #334155;
         }
-        /* Suavização de inputs */
         textarea, input {
             transition: all 0.3s ease;
         }
@@ -75,7 +74,8 @@
                             <span class="w-2 h-6 bg-blue-500 rounded-sm"></span>
                             Eixo X (Dados Independentes)
                         </label>
-                        <textarea id="xData" rows="3" class="w-full p-4 border border-gray-200 rounded-xl bg-slate-50 text-slate-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white resize-none" placeholder="Insira números separados por vírgula..."></textarea>
+                        <textarea id="xData" rows="5" class="w-full p-4 border border-gray-200 rounded-xl bg-slate-50 text-slate-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white resize-none" placeholder="Exemplo:&#10;10&#10;20&#10;30&#10;(Aceita vírgula ou enter)"></textarea>
+                        <p class="text-[10px] text-gray-400 mt-1 text-right">Use ponto (.) para decimais</p>
                     </div>
                     
                     <div class="relative">
@@ -83,7 +83,7 @@
                             <span class="w-2 h-6 bg-indigo-500 rounded-sm"></span>
                             Eixo Y (Dados Dependentes)
                         </label>
-                        <textarea id="yData" rows="3" class="w-full p-4 border border-gray-200 rounded-xl bg-slate-50 text-slate-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white resize-none" placeholder="Insira números separados por vírgula..."></textarea>
+                        <textarea id="yData" rows="5" class="w-full p-4 border border-gray-200 rounded-xl bg-slate-50 text-slate-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white resize-none" placeholder="Exemplo:&#10;5&#10;15&#10;25&#10;(Aceita vírgula ou enter)"></textarea>
                     </div>
                 </div>
 
@@ -103,19 +103,19 @@
                 </div>
 
                 <div class="flex justify-center mb-8">
-                    <button onclick="updateChart()" class="bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold py-3 px-10 rounded-lg shadow-lg shadow-gray-400/30 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2">
+                    <button id="btnGenerate" onclick="updateChart()" class="bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold py-3 px-12 rounded-lg shadow-lg shadow-gray-400/30 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-200 flex items-center gap-2 cursor-pointer z-10">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
-                        Gerar Visualização
+                        GERAR VISUALIZAÇÃO
                     </button>
                 </div>
 
-                <div class="relative w-full rounded-xl overflow-hidden border border-gray-200 shadow-inner bg-white">
+                <div id="error-message" class="hidden mt-4 p-4 rounded-lg text-sm font-medium text-center border"></div>
+
+                <div class="relative w-full rounded-xl overflow-hidden border border-gray-200 shadow-inner bg-white mt-4">
                     <div id="scatterPlot" class="w-full h-[500px]"></div>
                 </div>
-
-                <div id="error-message" class="hidden mt-4 p-4 rounded-lg text-sm font-medium text-center animate-pulse"></div>
             </div>
         </div>
     </main>
@@ -141,89 +141,38 @@
     </footer>
 
     <script>
-        // Lógica de Mensagens
         function showMessage(message, type = 'error') {
             const el = document.getElementById('error-message');
-            el.textContent = message;
-            el.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-blue-50', 'text-blue-700');
+            el.innerHTML = message;
+            el.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200', 'bg-blue-50', 'text-blue-700', 'border-blue-200');
             
             if (type === 'error') {
-                el.classList.add('bg-red-50', 'text-red-700');
+                el.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
             } else {
-                el.classList.add('bg-blue-50', 'text-blue-700');
+                el.classList.add('bg-blue-50', 'text-blue-700', 'border-blue-200');
             }
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function hideMessage() {
             document.getElementById('error-message').classList.add('hidden');
         }
 
-        // Função Geradora de Dados Aleatórios (Lógica de Negócios)
+        // Função robusta para limpar e converter texto em números
+        function parseDataInput(inputText) {
+            if (!inputText) return [];
+            // Substitui vírgulas decimais (erradas) por pontos, se houver confusão, mas aqui assumimos separação
+            // Estratégia: Divide por quebra de linha, vírgula ou ponto e vírgula
+            return inputText.split(/[\n,;]+/) 
+                           .map(item => item.trim())
+                           .filter(item => item !== '')
+                           .map(item => parseFloat(item))
+                           .filter(item => !isNaN(item));
+        }
+
         function generateRandomScenario() {
             let xArr = [];
             let yArr = [];
             let baseVal = 1000;
             
-            // Cria 15 pontos de dados simulando Investimento vs Retorno
-            for (let i = 0; i < 15; i++) {
-                let xVal = baseVal + (i * 500) + Math.floor(Math.random() * 300);
-                // Correlação positiva com variação
-                let yVal = Math.floor((xVal * 0.25) * ((Math.random() * 0.4) + 0.8)); 
-
-                xArr.push(xVal);
-                yArr.push(yVal);
-            }
-
-            // Preenche os campos
-            document.getElementById('xData').value = xArr.join(', ');
-            document.getElementById('yData').value = yArr.join(', ');
-            
-            // Preenche os rótulos sugeridos
-            document.getElementById('xLabel').value = "Investimento (R$)";
-            document.getElementById('yLabel').value = "Retorno Estimado (R$)";
-            document.getElementById('chartTitle').value = "Simulação: Cheguei Sou MEI";
-
-            // Atualiza o gráfico automaticamente
-            updateChart();
-            showMessage('Cenário de simulação gerado com sucesso!', 'info');
-        }
-
-        function updateChart() {
-            hideMessage();
-
-            const xInput = document.getElementById('xData').value;
-            const yInput = document.getElementById('yData').value;
-            
-            // Processamento dos dados
-            const xData = xInput.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
-            const yData = yInput.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
-
-            // Validação
-            if (xData.length === 0 || yData.length === 0) {
-                showMessage('Por favor, insira dados numéricos válidos nos campos acima.');
-                return;
-            }
-            if (xData.length !== yData.length) {
-                showMessage(`Erro: O Eixo X tem ${xData.length} itens e o Eixo Y tem ${yData.length}. Eles precisam ser iguais.`);
-                return;
-            }
-
-            // Configuração Visual Profissional
-            const trace = {
-                x: xData,
-                y: yData,
-                mode: 'markers',
-                type: 'scatter',
-                marker: {
-                    size: 14,
-                    color: yData, // Gradiente baseado no valor Y
-                    colorscale: 'Blues',
-                    showscale: false,
-                    line: {
-                        color: 'white',
-                        width: 1
-                    },
-                    opacity: 0.9
-                },
-                hovertemplate: 
-                    '
+            for (let i = 0; i
